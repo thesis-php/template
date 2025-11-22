@@ -12,3 +12,5 @@
 /phpstan.dist.neon       export-ignore
 /phpunit.xml.dist        export-ignore
 /psalm.xml.dist          export-ignore
+/Makefile                export-ignore
+/docker-compose.yaml     export-ignore

@@ -9,6 +9,10 @@
             "email": "udaltsov.valentin@gmail.com"
         },
         {
+          "name": "kafkiansky",
+          "email": "vadimzanfir@gmail.com"
+        },
+        {
             "name": "Thesis Team",
             "homepage": "https://github.com/orgs/thesis-php/people"
         }
@@ -50,6 +54,15 @@
     },
     "scripts": {
         "analyse-deps": "tools/composer-dependency-analyser/vendor/bin/composer-dependency-analyser",
+        "check": [
+            "@composer fixcs -- --dry-run",
+            "@composer rector -- --dry-run",
+            "@phpstan",
+            "@composer validate",
+            "@composer normalize --dry-run",
+            "@analyse-deps",
+            "@test"
+        ],
         "fixcs": "tools/php-cs-fixer/vendor/bin/php-cs-fixer fix --diff --verbose",
         "infection": "tools/infection/vendor/bin/infection --show-mutations",
         "normalize": "@composer bin composer-normalize normalize --diff ../../composer.json",
