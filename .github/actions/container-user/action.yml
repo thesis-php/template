@@ -1,0 +1,13 @@
+runs:
+  using: composite
+  steps:
+    - id: user
+      shell: bash
+      run: |
+        echo "CONTAINER_USER=$(id -u):$(id -g)" >> $GITHUB_ENV
+        echo "CONTAINER_USER=$(id -u):$(id -g)" >> $GITHUB_OUTPUT
+
+outputs:
+  user:
+    description: CONTAINER_USER
+    value: ${{ steps.user.outputs.CONTAINER_USER }}
