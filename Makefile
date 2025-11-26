@@ -48,7 +48,7 @@ run: ## Run a command using the php container: `make run CMD='php --version'`
 .PHONY: run
 
 t: terminal
-terminal: var ## Start a terminal inside the Docker container
+terminal: var ## Start a terminal inside the php container
 	@$(if $(INSIDE_CONTAINER),echo 'Already inside docker container.'; exit 1,)
 	$(DOCKER_COMPOSE) run --rm php bash
 .PHONY: t terminal
