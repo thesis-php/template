@@ -21,13 +21,13 @@ vendor: composer.json
 	if [ -f vendor/.lowest ]; then $(MAKE) install-lowest; else $(MAKE) install-highest; fi
 
 i: install-highest
-install-highest: ## Install Composer dependencies
-	$(COMPOSER) update
+install-highest: ## Install highest Composer dependencies
+	$(COMPOSER) update $(ARGS)
 	@rm -f vendor/.lowest
 .PHONY: i install-highest
 
-install-lowest: ## Install Composer dependencies
-	$(COMPOSER) update --prefer-lowest --prefer-stable
+install-lowest: ## Install lowest Composer dependencies
+	$(COMPOSER) update --prefer-lowest --prefer-stable $(ARGS)
 	@touch vendor/.lowest
 .PHONY: install-lowest
 
@@ -50,7 +50,7 @@ run: ## Run a command using the php container: `make run CMD='php --version'`
 t: terminal
 terminal: var ## Start a terminal inside the php container
 	@$(if $(INSIDE_CONTAINER),echo 'Already inside docker container.'; exit 1,)
-	$(DOCKER_COMPOSE) run --rm php bash
+	$(DOCKER_COMPOSE) run --rm $(ARGS) php bash
 .PHONY: t terminal
 
 ##
