@@ -4,6 +4,7 @@ include .env
 SHELL ?= /bin/bash
 DOCKER ?= docker
 DOCKER_COMPOSE ?= $(DOCKER) compose
+export CONTAINER_USER ?= $(shell id -u):$(shell id -g)
 INSIDE_CONTAINER ?= $(shell test -f /.dockerenv && echo 1)
 
 RUN ?= $(if $(INSIDE_CONTAINER),,$(DOCKER_COMPOSE) run --rm php)
@@ -34,51 +35,65 @@ run: ## Run a command inside the Docker container, e.g. `make run CMD=pwd`
 	$(RUN) $(CMD)
 .PHONY: run
 
+t: terminal
 terminal: var ## Start a terminal inside the Docker container
 	@$(if $(INSIDE_CONTAINER),echo 'Already inside docker container.'; exit 1,)
 	$(DOCKER_COMPOSE) run --rm php bash
-.PHONY: terminal
+.PHONY: t terminal
 
 ##
 ## Tools
 ## -----
 
-lint: var ## Check code style
-	$(RUN) php-cs-fixer fix --diff --verbose --dry-run
-	$(RUN) rector process --dry-run
-.PHONY: lint
+fixer: var ## Fix code style using PHP-CS-Fixer
+	$(RUN) php-cs-fixer fix --diff --verbose $(ARGS)
+.PHONY: fixer
 
-fixcs: var ## Fix code style
-	$(RUN) php-cs-fixer fix --diff --verbose
-	$(RUN) rector process
-.PHONY: fixcs
+fixer-check: var ## Check code style using PHP-CS-Fixer
+	$(RUN) php-cs-fixer fix --diff --verbose --dry-run $(ARGS)
+.PHONY: fixer-check
 
-phpstan: var vendor ## Analyze with PHPStan
-	$(RUN) phpstan analyze
+rector: var ## Fix code style using Rector
+	$(RUN) rector process $(ARGS)
+.PHONY: rector
+
+rector-check: var ## Check code style using Rector
+	$(RUN) rector process --dry-run $(ARGS)
+.PHONY: rector-check
+
+phpstan: var vendor ## Analyze code using PHPStan
+	$(RUN) phpstan analyze $(ARGS)
 .PHONY: phpstan
 
-test: var vendor ## Run tests
-	$(RUN) vendor/bin/phpunit
+test: var vendor ## Run tests using PHPUnit
+	$(RUN) vendor/bin/phpunit $(ARGS)
 .PHONY: test
 
-infect: var vendor ## Run mutation tests
-	$(RUN) infection --show-mutations
+infect: var vendor ## Run mutation tests using Infection
+	$(RUN) infection --show-mutations $(ARGS)
 .PHONY: infect
 
+deps-analyze: vendor ## Analyze project dependencies using Composer dependency analyser
+	$(RUN) composer-dependency-analyser $(ARGS)
+.PHONY: deps-analyze
+
 composer-validate: ## Validate composer.json
-	$(COMPOSER) validate
-	$(COMPOSER) normalize --diff --dry-run
+	$(COMPOSER) validate $(ARGS)
 .PHONY: composer-validate
 
 composer-normalize: ## Normalize composer.json
-	$(COMPOSER) normalize --diff
+	$(COMPOSER) normalize --diff $(ARGS)
 .PHONY: composer-normalize
 
-deps-analyze: vendor ## Analyze project dependencies
-	$(RUN) composer-dependency-analyser
-.PHONY: deps-analyze
+composer-normalize-check: ## Check that composer.json is normalized
+	$(COMPOSER) normalize --diff --dry-run $(ARGS)
+.PHONY: composer-normalize-check
 
-check: lint phpstan test composer-validate deps-analyze ## Run all project checks
+fix: fixer rector composer-normalize ## Run all fixing recipes
+.PHONY: fix
+
+check: fixer-check rector-check composer-validate composer-normalize-check phpstan test deps-analyze  ## Run all project checks
+.PHONY: check
 
 # -----------------------
 

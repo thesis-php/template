@@ -2,4 +2,4 @@
 
 declare(strict_types=1);
 
-echo 'Hello world!';
+echo 'Hello world!', PHP_EOL;

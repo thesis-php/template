@@ -4,6 +4,7 @@ services:
     user: ${CONTAINER_USER:-}
     environment:
       HISTFILE: /app/var/.docker_history
+      COMPOSER_CACHE_DIR: /app/var/.composer_cache
     tty: true
     volumes:
       - .:/app:cached

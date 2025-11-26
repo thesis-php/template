@@ -1,23 +1,21 @@
 on:
   workflow_dispatch: ~
   push:
-    branches: ['main', '*.*.x']
+    branches: [main, '*.*.x']
   pull_request: ~
 
 jobs:
-  lint:
+  code-style:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - uses: ./.github/actions/container-user
-      - run: make lint
+      - run: make fixer-check rector-check
 
   composer:
     runs-on: ubuntu-latest
     steps:
-        - uses: actions/checkout@v6
-        - uses: ./.github/actions/container-user
-        - run: make composer-validate deps-analyze
+      - uses: actions/checkout@v6
+      - run: make composer-validate composer-normalize-check deps-analyze
 
   phpstan:
     runs-on: ubuntu-latest
@@ -28,7 +26,6 @@ jobs:
         deps: [ lowest, highest ]
     steps:
       - uses: actions/checkout@v6
-      - uses: ./.github/actions/container-user
       - run: PHP_VERSION=${{ matrix.php }} make install-${{ matrix.deps }} phpstan
 
   test:
@@ -36,5 +33,10 @@ jobs:
     strategy: *strategy
     steps:
       - uses: actions/checkout@v6
-      - uses: ./.github/actions/container-user
       - run: PHP_VERSION=${{ matrix.php }} make install-${{ matrix.deps }} test
+
+  # infect:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v6
+  #     - run: make infect
