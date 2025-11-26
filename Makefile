@@ -39,9 +39,9 @@ down: ## Docker compose down
 	$(DOCKER_COMPOSE) down --remove-orphans $(ARGS)
 .PHONY: down
 
-dc: ## Docker compose command: `make dc CMD=start`
+compose: ## Run docker compose command: `make compose CMD=start`
 	$(DOCKER_COMPOSE) $(CMD)
-.PHONY: dc
+.PHONY: compose
 
 run: ## Run a command using the php container: `make run CMD='php --version'`
 	$(RUN) $(CMD)
