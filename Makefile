@@ -41,7 +41,7 @@ down: ## Docker compose down
 
 dc: ## Docker compose command: `make dc CMD=start`
 	$(DOCKER_COMPOSE) $(CMD)
-.PHONY: start
+.PHONY: dc
 
 run: ## Run a command using the php container: `make run CMD='php --version'`
 	$(RUN) $(CMD)
