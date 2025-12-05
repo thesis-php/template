@@ -11,7 +11,7 @@ scaffold:
 	  --package-vendor-default thesis \
 	  --package-project-default '$(shell basename $$(pwd))' \
 	  --php-constraint-default '^8.4' \
-	  --authors-default '[{"name":"kafkiansky","email":"vadimzanfir@gmail.com"},{"name":"Valentin Udaltsov","email":"udaltsov.valentin@gmail.com"},{"name":"Thesis Team","homepage":"https:\/\/github.com\/orgs\/thesis-php\/people"}]' \
+	  --authors-default '[{"name":"kafkiansky","email":"vadimzanfir@gmail.com"},{"name":"Valentin Udaltsov","email":"udaltsov.valentin@gmail.com"},{"name":"Thesis Team","homepage":"https://github.com/orgs/thesis-php/people"}]' \
 	  --copyright-holder-default 'Valentin Udaltsov'
 	git add --all 2>/dev/null || true
 .PHONY: scaffold
